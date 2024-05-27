@@ -40,6 +40,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -72,37 +73,33 @@ data class BottomNavigationItem(
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var receipAPI:RecipesAPI
+    val navBottomitems= listOf(
+        BottomNavigationItem("Home",Icons.Filled.Home,Icons.Outlined.Home,false),
+        BottomNavigationItem("Saved",Icons.Filled.Favorite,Icons.Outlined.Favorite,true,0),
+        BottomNavigationItem("Setting",Icons.Filled.Settings,Icons.Outlined.Settings,true)
+    )
 
-
+    val navSideitems= listOf(
+        BottomNavigationItem("Home",Icons.Filled.Home,Icons.Outlined.Home,false),
+        BottomNavigationItem("Saved",Icons.Filled.Favorite,Icons.Outlined.Favorite,true,0),
+        BottomNavigationItem("Setting",Icons.Filled.Settings,Icons.Outlined.Settings,true)
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             AndroidMvvmTheme {
-                val scrollbehavior=TopAppBarDefaults.pinnedScrollBehavior()
-                val navBottomitems= listOf(
-                    BottomNavigationItem("Home",Icons.Filled.Home,Icons.Outlined.Home,false),
-                    BottomNavigationItem("Saved",Icons.Filled.Favorite,Icons.Outlined.Favorite,true,0),
-                    BottomNavigationItem("Setting",Icons.Filled.Settings,Icons.Outlined.Settings,true)
-                )
-
-                val navSideitems= listOf(
-                    BottomNavigationItem("Home",Icons.Filled.Home,Icons.Outlined.Home,false),
-                    BottomNavigationItem("Saved",Icons.Filled.Favorite,Icons.Outlined.Favorite,true,0),
-                    BottomNavigationItem("Setting",Icons.Filled.Settings,Icons.Outlined.Settings,true)
-                )
-
+                val scrollBehavior=TopAppBarDefaults.pinnedScrollBehavior()
                 var selectedBottomNavItemIndex by rememberSaveable {
-                    mutableStateOf(0)
+                    mutableIntStateOf(0)
                 }
                 var selectedSideNavItemIndex by rememberSaveable {
-                    mutableStateOf(0)
+                    mutableIntStateOf(0)
                 }
-                var drawerState= rememberDrawerState(initialValue = DrawerValue.Closed)
+                val drawerState= rememberDrawerState(initialValue = DrawerValue.Closed)
                 val coroutineScope = rememberCoroutineScope()
+
                 ModalNavigationDrawer  (
                     drawerState = drawerState,
                     drawerContent = {
@@ -140,12 +137,10 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ){
-                    Scaffold(modifier = Modifier
-                        .fillMaxSize()
-                        .nestedScroll(scrollbehavior.nestedScrollConnection),
+                    Scaffold(modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
                         topBar = {
                             TopAppBar(
-                                title = { Text("Receip List") },
+                                title = { Text("Recipe List") },
                                 navigationIcon = {
                                     IconButton(onClick = {
                                         coroutineScope.launch {
@@ -168,11 +163,11 @@ class MainActivity : ComponentActivity() {
                                     IconButton(onClick = {}) {
                                         Icon(
                                             imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                                            contentDescription = "Refresh"
+                                            contentDescription = "Exit"
                                         )
                                     }
                                 },
-                                scrollBehavior = scrollbehavior
+                                scrollBehavior = scrollBehavior
                             )
                         },
                         bottomBar = {
@@ -232,6 +227,8 @@ class MainActivity : ComponentActivity() {
 
     }
 }
+
+
 
 
 

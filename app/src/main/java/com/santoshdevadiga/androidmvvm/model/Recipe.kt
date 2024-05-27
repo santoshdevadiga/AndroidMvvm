@@ -17,7 +17,7 @@ data class Recipe(
     @SerialName("id")
     val id: Int, // 1
     @SerialName("image")
-    val image: String, // https://cdn.dummyjson.com/recipe-images/1.webp
+    val image: String,
     @SerialName("ingredients")
     val ingredients: List<String>,
     @SerialName("instructions")

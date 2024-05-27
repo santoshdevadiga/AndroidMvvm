@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import org.json.JSONObject
 import javax.inject.Inject
 
-class ReceipRepository @Inject constructor(private val receipApi:RecipesAPI) {
+class RecipeRepository @Inject constructor(private val receipApi:RecipesAPI) {
 
     private val _receipStateFlow = MutableStateFlow<NetworkResult<RecipeLists>>(NetworkResult.Loading())
     val receipStateFlow: StateFlow<NetworkResult<RecipeLists>> = _receipStateFlow

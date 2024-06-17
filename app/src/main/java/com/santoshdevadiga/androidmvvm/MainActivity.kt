@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
@@ -41,7 +40,6 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -50,22 +48,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
-import com.santoshdevadiga.androidmvvm.api.RecipesAPI
-import com.santoshdevadiga.androidmvvm.screen.ReceipScreen
-import com.santoshdevadiga.androidmvvm.ui.theme.AndroidMvvmTheme
+import com.santoshdevadiga.androidmvvm.screen.recipe.RecipeScreen
+import com.santoshdevadiga.androidmvvm.ui.theme.RecipeAppTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-import javax.inject.Scope
 
 
 data class BottomNavigationItem(
     val title:String,
     val selectedIcon:ImageVector,
     val unselectedIcon:ImageVector,
-    val hasSavedReceip:Boolean,
+    val hasSavedRecipe:Boolean,
     val badgeCount:Int?=null
 )
 
@@ -73,13 +66,13 @@ data class BottomNavigationItem(
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
 
-    val navBottomitems= listOf(
+    private val navBottomItems= listOf(
         BottomNavigationItem("Home",Icons.Filled.Home,Icons.Outlined.Home,false),
         BottomNavigationItem("Saved",Icons.Filled.Favorite,Icons.Outlined.Favorite,true,0),
         BottomNavigationItem("Setting",Icons.Filled.Settings,Icons.Outlined.Settings,true)
     )
 
-    val navSideitems= listOf(
+    private val navSideItems= listOf(
         BottomNavigationItem("Home",Icons.Filled.Home,Icons.Outlined.Home,false),
         BottomNavigationItem("Saved",Icons.Filled.Favorite,Icons.Outlined.Favorite,true,0),
         BottomNavigationItem("Setting",Icons.Filled.Settings,Icons.Outlined.Settings,true)
@@ -89,7 +82,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AndroidMvvmTheme {
+            RecipeAppTheme {
                 val scrollBehavior=TopAppBarDefaults.pinnedScrollBehavior()
                 var selectedBottomNavItemIndex by rememberSaveable {
                     mutableIntStateOf(0)
@@ -105,7 +98,7 @@ class MainActivity : ComponentActivity() {
                     drawerContent = {
                         ModalDrawerSheet {
                             Spacer(Modifier.height(16.dp))
-                            navSideitems.forEachIndexed{ index, sideNavigationItem ->
+                            navSideItems.forEachIndexed{ index, sideNavigationItem ->
                                 NavigationDrawerItem(
                                     label = {
                                         Text(text = sideNavigationItem.title)
@@ -139,7 +132,7 @@ class MainActivity : ComponentActivity() {
                 ){
                     Scaffold(modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
                         topBar = {
-                            TopAppBar(
+                             TopAppBar(
                                 title = { Text("Recipe List") },
                                 navigationIcon = {
                                     IconButton(onClick = {
@@ -172,7 +165,7 @@ class MainActivity : ComponentActivity() {
                         },
                         bottomBar = {
                             NavigationBar {
-                                navBottomitems.forEachIndexed { index, bottomNavigationItem ->
+                                navBottomItems.forEachIndexed { index, bottomNavigationItem ->
                                     NavigationBarItem(
                                         selected = selectedBottomNavItemIndex == index,
                                         onClick = {
@@ -186,7 +179,7 @@ class MainActivity : ComponentActivity() {
                                                     Badge {
                                                         Text(bottomNavigationItem.badgeCount.toString())
                                                     }
-                                                } else if (bottomNavigationItem.hasSavedReceip) {
+                                                } else if (bottomNavigationItem.hasSavedRecipe) {
                                                     Badge()
                                                 }
                                             }) {
@@ -216,7 +209,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     ) { innerPadding ->
-                        ReceipScreen(
+                        RecipeScreen(
                             modifier = Modifier.padding(innerPadding)
                         )
 
@@ -228,14 +221,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
-
-
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    AndroidMvvmTheme {
-        ReceipScreen(modifier=Modifier)
+    RecipeAppTheme {
+        RecipeScreen(modifier=Modifier)
     }
 }

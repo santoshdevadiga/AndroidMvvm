@@ -23,7 +23,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun providesReceipAPI(retrofitBuilder: Retrofit.Builder): RecipesAPI {
+    fun providesRecipeAPI(retrofitBuilder: Retrofit.Builder): RecipesAPI {
         return retrofitBuilder.build().create(RecipesAPI::class.java)
     }
 

@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AndroidMvvm"
+rootProject.name = "RecipeApp"
 include(":app")

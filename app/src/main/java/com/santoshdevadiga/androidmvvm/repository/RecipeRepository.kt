@@ -10,19 +10,19 @@ import javax.inject.Inject
 
 class RecipeRepository @Inject constructor(private val receipApi:RecipesAPI) {
 
-    private val _receipStateFlow = MutableStateFlow<NetworkResult<RecipeLists>>(NetworkResult.Loading())
-    val receipStateFlow: StateFlow<NetworkResult<RecipeLists>> = _receipStateFlow
+    private val _recipeStateFlow = MutableStateFlow<NetworkResult<RecipeLists>>(NetworkResult.Loading())
+    val recipeStateFlow: StateFlow<NetworkResult<RecipeLists>> = _recipeStateFlow
 
-    suspend fun getReceipList() {
-        _receipStateFlow.emit(NetworkResult.Loading())
+    suspend fun getRecipeList() {
+        _recipeStateFlow.emit(NetworkResult.Loading())
         val response = receipApi.getRecipes()
         if (response.isSuccessful && response.body() != null) {
-            _receipStateFlow.emit(NetworkResult.Success(response.body()!!))
+            _recipeStateFlow.emit(NetworkResult.Success(response.body()!!))
         } else if (response.errorBody() != null) {
             val errorObj = JSONObject(response.errorBody()!!.charStream().readText())
-            _receipStateFlow.emit(NetworkResult.Error(errorObj.getString("message")))
+            _recipeStateFlow.emit(NetworkResult.Error(errorObj.getString("message")))
         } else {
-            _receipStateFlow.emit(NetworkResult.Error("Something Went Wrong"))
+            _recipeStateFlow.emit(NetworkResult.Error("Something Went Wrong"))
         }
     }
 }
